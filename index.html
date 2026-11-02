@@ -64,10 +64,10 @@
     async function loadLiteraryPieces() {
       const container = document.getElementById('poetry-container');
       try {
-        // שימוש בשאילתה מסוננת ישירות מול Firebase כדי להימנע משגיאות הרשאה
+        // שליפת פתקים שמוגדרים כציבוריים בלבד בעזרת השדה isPublic
         const q = query(
           collection(db, "notes"), 
-          where("category", "in", ["שירים", "סיפורים", "שיר"])
+          where("isPublic", "==", true)
         );
         
         const querySnapshot = await getDocs(q);
@@ -75,7 +75,6 @@
 
         querySnapshot.forEach((docSnap) => {
           const note = docSnap.data();
-          // סינון נוסף לוודא שהפתק לא נמצא בארכיון
           if (!note.archived) {
             pieces.push({ id: docSnap.id, ...note });
           }
@@ -85,7 +84,7 @@
         pieces.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
         if (pieces.length === 0) {
-          container.innerHTML = `<div class="loading">עדיין אין יצירות להצגה בקטגוריות המוגדרות.</div>`;
+          container.innerHTML = `<div class="loading">עדיין אין יצירות ציבוריות להצגה.</div>`;
           return;
         }
 
@@ -96,7 +95,7 @@
             <article class="piece-card">
               ${titleHtml}
               <div class="piece-meta">
-                <span class="piece-cat">${escapeHtml(p.category)}</span>
+                <span class="piece-cat">${escapeHtml(p.category || 'יצירה')}</span>
                 <span>•</span>
                 <span>${escapeHtml(p.date || '')}</span>
               </div>
