@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>יצירות ושירים - גיא אייגנר</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #fcfbf9;
+      --text-main: #2b2b2b;
+      --text-muted: #666666;
+      --primary: #475d71;
+      --border: #e6e2dd;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Assistant', sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 40px 20px; }
+
+    .container { max-width: 700px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 50px; border-bottom: 1px solid var(--border); padding-bottom: 25px; }
+    h1 { font-family: 'Frank Ruhl Libre', serif; font-size: 2.2rem; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+    p.subtitle { color: var(--text-muted); font-size: 1.05rem; }
+
+    .pieces-list { display: flex; flex-direction: column; gap: 40px; }
+    .piece-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+    .piece-title { font-family: 'Frank Ruhl Libre', serif; font-size: 1.5rem; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .piece-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; display: flex; gap: 10px; align-items: center; }
+    .piece-cat { background: #f0ede6; padding: 2px 8px; border-radius: 6px; font-weight: 600; color: #444; }
+    .piece-body { font-size: 1.1rem; white-space: pre-wrap; line-height: 1.8; font-family: 'Frank Ruhl Libre', serif; color: #333; }
+    
+    .loading { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>שירים וסיפורים</h1>
+      <p class="subtitle">מרחב יצירה ותצוגה ספרותית</p>
+    </header>
+
+    <main id="poetry-container">
+      <div class="loading">טוען יצירות מהענן...</div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // נתוני ההתחברות המשותפים ל־Firebase שלך
+    const firebaseConfig = {
+      apiKey: "AIzaSyAngVWlat_rJQO3lxU6QgiubCCg39EgTtU",
+      authDomain: "notes-1ea7c.firebaseapp.com",
+      projectId: "notes-1ea7c",
+      storageBucket: "notes-1ea7c.firebasestorage.app",
+      messagingSenderId: "708973221800",
+      appId: "1:708973221800:web:d68ddcb51e69e8a450af9d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // הגדרת הקטגוריות שתרצה שיוצגו באתר (למשל שירים או סיפורים)
+    const TARGET_CATEGORIES = ['שירים', 'סיפורים', 'שיר'];
+
+    async function loadLiteraryPieces() {
+      const container = document.getElementById('poetry-container');
+      try {
+        const querySnapshot = await getDocs(collection(db, "notes"));
+        let pieces = [];
+
+        querySnapshot.forEach((docSnap) => {
+          const note = docSnap.data();
+          // סינון אוטומטי לפי הקטגוריות המיועדות ולוודא שאינו בארכיון
+          const cat = (note.category || '').trim();
+          if (TARGET_CATEGORIES.includes(cat) && !note.archived) {
+            pieces.push({ id: docSnap.id, ...note });
+          }
+        });
+
+        // מיון לפי תאריך יצירה חדש ישן
+        pieces.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+        if (pieces.length === 0) {
+          container.innerHTML = `<div class="loading">עדיין אין יצירות להצגה בקטגוריות המוגדרות.</div>`;
+          return;
+        }
+
+        let html = '<div class="pieces-list">';
+        pieces.forEach(p => {
+          const titleHtml = p.title ? `<div class="piece-title">${escapeHtml(p.title)}</div>` : '';
+          html += `
+            <article class="piece-card">
+              ${titleHtml}
+              <div class="piece-meta">
+                <span class="piece-cat">${escapeHtml(p.category)}</span>
+                <span>•</span>
+                <span>${escapeHtml(p.date || '')}</span>
+              </div>
+              <div class="piece-body">${escapeHtml(p.text)}</div>
+            </article>
+          `;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+
+      } catch (error) {
+        console.error(error);
+        container.innerHTML = `<div class="loading" style="color: #be123c;">שגיאה בטעינת הנתונים מהענן.</div>`;
+      }
+    }
+
+    function escapeHtml(text) {
+      return (text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    loadLiteraryPieces();
+  </script>
+</body>
+</html>
