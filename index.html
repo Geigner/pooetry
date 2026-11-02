@@ -47,9 +47,8 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // נתוני ההתחברות המשותפים ל־Firebase שלך
     const firebaseConfig = {
       apiKey: "AIzaSyAngVWlat_rJQO3lxU6QgiubCCg39EgTtU",
       authDomain: "notes-1ea7c.firebaseapp.com",
@@ -62,25 +61,27 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // הגדרת הקטגוריות שתרצה שיוצגו באתר (למשל שירים או סיפורים)
-    const TARGET_CATEGORIES = ['שירים', 'סיפורים', 'שיר'];
-
     async function loadLiteraryPieces() {
       const container = document.getElementById('poetry-container');
       try {
-        const querySnapshot = await getDocs(collection(db, "notes"));
+        // שימוש בשאילתה מסוננת ישירות מול Firebase כדי להימנע משגיאות הרשאה
+        const q = query(
+          collection(db, "notes"), 
+          where("category", "in", ["שירים", "סיפורים", "שיר"])
+        );
+        
+        const querySnapshot = await getDocs(q);
         let pieces = [];
 
         querySnapshot.forEach((docSnap) => {
           const note = docSnap.data();
-          // סינון אוטומטי לפי הקטגוריות המיועדות ולוודא שאינו בארכיון
-          const cat = (note.category || '').trim();
-          if (TARGET_CATEGORIES.includes(cat) && !note.archived) {
+          // סינון נוסף לוודא שהפתק לא נמצא בארכיון
+          if (!note.archived) {
             pieces.push({ id: docSnap.id, ...note });
           }
         });
 
-        // מיון לפי תאריך יצירה חדש ישן
+        // מיון לפי תאריך יצירה (חדש ישן)
         pieces.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
         if (pieces.length === 0) {
