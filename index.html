@@ -6,8 +6,8 @@
   <title>מילים - Tנופת</title>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;600;700&display=swap" rel="stylesheet">
   
-  <!-- פאביקון מובנה אלגנטי (אות T) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%><text y=%22.9em%22 font-size=%2290%22 font-family=%22serif%22 fill=%22%23475d71%22>T</text></svg>">
+  <!-- פאביקון מעוצב כסמל/ציור יוקרתי -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23475d71'/><text x='50' y='70' font-size='65' font-family='Frank Ruhl Libre, serif' font-weight='700' fill='%23ffffff' text-anchor='middle'>T</text></svg>">
 
   <style>
     :root {
@@ -63,7 +63,7 @@
       100% { transform: translate(-40px, -50px) scale(0.92); }
     }
 
-    /* --- חותמת מים דיסקרטית ושקטה בפינת המסך --- */
+    /* --- חותמת מים דיסקרטית ושקטה בפינה --- */
     .subtle-watermark {
       position: fixed;
       bottom: 30px;
@@ -72,7 +72,7 @@
       font-size: 0.95rem;
       font-weight: 600;
       color: var(--primary);
-      opacity: 0.3; /* עדין מאוד ולא בולט מדי */
+      opacity: 0.3;
       letter-spacing: 2px;
       pointer-events: none;
       z-index: 5;
@@ -178,6 +178,13 @@
       font-weight: 700;
       color: #1a1a1a;
       letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      font-weight: 300;
     }
 
     /* --- רשת כרטיסים אקסקלוסיבית עם הברקת אור --- */
@@ -425,6 +432,7 @@
   <div class="container">
     <header>
       <h1>מילים</h1>
+      <p class="subtitle">Tנופת - מרחב יצירה מינימליסטי</p>
     </header>
 
     <main id="poetry-container" class="chocolate-box-grid">
