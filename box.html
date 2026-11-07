@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>קופסת השוקולדים (גל אלכסוני) - Tנופת</title>
+  <title>קופסת השוקולדים (נשימה חיה) - Tנופת</title>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -12,7 +12,7 @@
       --text-main: #222222;
       --text-muted: #666666;
       --primary: #475d71;
-      --card-bg: rgba(255, 255, 255, 0.82);
+      --card-bg: rgba(255, 255, 255, 0.85);
       --card-border: rgba(230, 226, 221, 0.9);
       --accent-glow-1: rgba(215, 195, 170, 0.6);
       --accent-glow-2: rgba(180, 200, 220, 0.55);
@@ -91,7 +91,7 @@
     .chocolat-piece {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border);
+      border: 1.5px solid var(--card-border);
       border-radius: 18px;
       height: 170px;
       padding: 22px;
@@ -101,53 +101,37 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.02);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
       transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      /* אנימציית נשימה צבעונית שקטה שפועמת על המסגרת והצללים */
+      animation: colorBreath 7s infinite ease-in-out;
     }
 
-    /* פס גל אלכסוני שחולף על פני הכרטיס */
-    .chocolat-piece::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        135deg,
-        transparent 40%,
-        rgba(71, 93, 113, 0.06) 48%,
-        rgba(215, 195, 170, 0.12) 50%,
-        rgba(71, 93, 113, 0.06) 52%,
-        transparent 60%
-      );
-      transform: translateY(-100%) translateX(-100%) rotate(25deg);
-      animation: diagonalWave 7s infinite ease-in-out;
-      pointer-events: none;
-    }
+    /* פיזור תזמון לנשימה טבעית */
+    .chocolat-piece:nth-child(2n) { animation-delay: 2s; }
+    .chocolat-piece:nth-child(3n) { animation-delay: 4s; }
+    .chocolat-piece:nth-child(5n) { animation-delay: 5.5s; }
 
-    /* פיזור זמני ההשהיה של הגל כדי שכל קובייה תזהר בזמנה הנפרד */
-    .chocolat-piece:nth-child(2n)::after { animation-delay: 2s; }
-    .chocolat-piece:nth-child(3n)::after { animation-delay: 4s; }
-    .chocolat-piece:nth-child(5n)::after { animation-delay: 5.5s; }
-
-    @keyframes diagonalWave {
-      0% {
-        transform: translateY(-100%) translateX(-100%) rotate(25deg);
+    @keyframes colorBreath {
+      0%, 100% {
+        border-color: rgba(230, 226, 221, 0.9);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.03);
       }
-      20%, 100% {
-        transform: translateY(100%) translateX(100%) rotate(25deg);
+      50% {
+        border-color: rgba(71, 93, 113, 0.35); /* נגיעה של צבע אצילי עמוק */
+        box-shadow: 0 10px 30px rgba(71, 93, 113, 0.12); /* הילה צבעונית רכה שמזמינה לגעת */
       }
     }
 
     /* אנימציית ריחוף יוקרתית */
     .chocolat-piece:hover, .chocolat-piece.active-mobile {
       transform: translateY(-6px) scale(1.02);
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 16px 40px rgba(71, 93, 113, 0.14);
-      border-color: rgba(71, 93, 113, 0.35);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 16px 40px rgba(71, 93, 113, 0.18);
+      border-color: rgba(71, 93, 113, 0.5);
       height: 230px;
       z-index: 10;
+      animation-play-state: paused;
     }
 
     .piece-header {
@@ -158,11 +142,16 @@
 
     .piece-cat {
       font-size: 0.75rem;
-      background: rgba(71, 93, 113, 0.08);
+      background: rgba(71, 93, 113, 0.1);
       color: var(--primary);
-      padding: 3px 9px;
+      padding: 3px 10px;
       border-radius: 10px;
       font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .chocolat-piece:hover .piece-cat {
+      background: rgba(71, 93, 113, 0.18);
     }
 
     .piece-title {
