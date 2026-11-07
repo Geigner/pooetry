@@ -189,7 +189,7 @@
     }
     .read-more { font-size: 0.85rem; color: var(--primary); font-weight: 600; }
 
-    /* --- מודאל קריאה עם רקע דינאמי ורצועת צלליות בתחתית --- */
+    /* --- מודאל קריאה עם רקע דינאמי וצלליות --- */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(15, 15, 15, 0.45); backdrop-filter: blur(10px);
@@ -200,7 +200,7 @@
 
     .modal-content {
       background: #fdfdfc; border-radius: 24px; max-width: 680px; width: 100%;
-      max-height: 88vh; overflow-y: auto; padding: 50px 45px 120px 45px; /* מרווח גדול יותר למטה בשביל הצללית */
+      max-height: 88vh; overflow-y: auto; padding: 50px 45px 120px 45px;
       box-shadow: 0 25px 60px rgba(0,0,0,0.2); position: relative;
       transform: translateY(20px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.6s ease;
       border: 1px solid rgba(255,255,255,0.6);
@@ -246,7 +246,7 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      opacity: 0.18; /* שקיפות עדינה שמשתלבת ברקע בלי להפריע לקריאה */
+      opacity: 0.18;
       overflow: hidden;
     }
     .story-silhouette-container svg {
@@ -315,7 +315,6 @@
       <h2 class="modal-title" id="modal-title"></h2>
       <div class="modal-body" id="modal-body"></div>
       
-      <!-- אזור הצלליות הדינאמי בתחתית -->
       <div class="story-silhouette-container" id="silhouette-box"></div>
     </div>
   </div>
@@ -367,8 +366,8 @@
         setupMenuAndSearch();
         setupGlobalKeyboardEvents();
 
-      } libraryError => {
-        console.error(libraryError);
+      } catch (error) {
+        console.error(error);
         container.innerHTML = `<div class="loading" style="color: #be123c;">שגיאה בטעינת הנתונים מהענן.</div>`;
       }
     }
@@ -479,7 +478,6 @@
       container.innerHTML = html;
     }
 
-    // מנוע רקע דינאמי
     function generateDynamicBackground(title, text) {
       const content = (title + ' ' + text).toLowerCase();
       if (content.match(/ים|מים|שמיים|רוח|ענן|גשם|כחול|אופק/)) {
@@ -497,22 +495,17 @@
       return `linear-gradient(135deg, hsl(${hue1}, 40%, 96%) 0%, hsl(${hue2}, 45%, 91%) 100%)`;
     }
 
-    // מנוע בחירת צללית ויזואלית בתחתית המודאל לפי תוכן הסיפור
     function getStorySilhouette(title, text) {
       const content = (title + ' ' + text).toLowerCase();
 
       if (content.match(/ארנב|חיה|טבע|ילד|גן/)) {
-        // צללית של ילד/דמות וארנב / טבע
         return `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/><path d="M18.5 10.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5.5 10.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`;
       } else if (content.match(/ציפור|שמיים|עוף|מעוף|רוח/)) {
-        // צללית ציפורים עפות
         return `<svg viewBox="0 0 24 24"><path d="M21 5c-1.11-.35-2.3-.5-3.5-5-2.24 0-4.41.61-6.3 1.81C9.31.61 7.14 0 4.9 0 3.7 0 2.51.15 1.41.5 1.15.58 1 .84 1 1.12c0 .32.22.6.54.69 1.02.3 2.08.45 3.36.45 1.83 0 3.65-.54 5.25-1.6 1.6 1.06 3.42 1.6 5.25 1.6 1.28 0 2.34-.15 3.36-.45.32-.09.54-.37.54-.69 0-.28-.15-.54-.41-.62z"/></svg>`;
       } else if (content.match(/עץ|יער|צמח|עלים/)) {
-        // צללית עץ
         return `<svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13.5H5.5L12 6.5z"/></svg>`;
       }
       
-      // ברירת מחדל: אלמנט הרים / אופק פיוטי
       return `<svg viewBox="0 0 24 24"><path d="M14 6l-3.75 5 2.85 3.8-1.6 1.2C9.81 13.75 7 10 7 10l-6 8h22L14 6z"/></svg>`;
     }
 
@@ -531,7 +524,6 @@
       document.getElementById('modal-title').textContent = piece.title || 'ללא כותרת';
       document.getElementById('modal-cat').textContent = piece.category || 'יצירה';
       
-      // התאמת רקע וצללית בהתאם לתוכן
       modalContentEl.style.background = generateDynamicBackground(piece.title || '', piece.text || '');
       silhouetteBox.innerHTML = getStorySilhouette(piece.title || '', piece.text || '');
 
