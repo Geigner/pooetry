@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>קופסת השוקולדים (נשימה חיה) - Tנופת</title>
+  <title>קופסת השוקולדים (נשימה צבעונית רכה) - Tנופת</title>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -12,8 +12,6 @@
       --text-main: #222222;
       --text-muted: #666666;
       --primary: #475d71;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(230, 226, 221, 0.9);
       --accent-glow-1: rgba(215, 195, 170, 0.6);
       --accent-glow-2: rgba(180, 200, 220, 0.55);
       --accent-glow-3: rgba(230, 220, 200, 0.5);
@@ -89,9 +87,9 @@
     }
 
     .chocolat-piece {
-      background: var(--card-bg);
+      background: rgba(255, 255, 255, 0.78);
       backdrop-filter: blur(12px);
-      border: 1.5px solid var(--card-border);
+      border: 1px solid rgba(230, 226, 221, 0.85);
       border-radius: 18px;
       height: 170px;
       padding: 22px;
@@ -103,35 +101,49 @@
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,0.03);
       transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-      /* אנימציית נשימה צבעונית שקטה שפועמת על המסגרת והצללים */
-      animation: colorBreath 7s infinite ease-in-out;
     }
 
-    /* פיזור תזמון לנשימה טבעית */
-    .chocolat-piece:nth-child(2n) { animation-delay: 2s; }
-    .chocolat-piece:nth-child(3n) { animation-delay: 4s; }
-    .chocolat-piece:nth-child(5n) { animation-delay: 5.5s; }
+    /* שכבת צבע פנימית שנושמת וזזה בעדינות על פני כל הכרטיס */
+    .chocolat-piece::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(215, 195, 170, 0.25), rgba(180, 200, 220, 0.25));
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      animation: cardBreath 7s infinite ease-in-out;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-    @keyframes colorBreath {
-      0%, 100% {
-        border-color: rgba(230, 226, 221, 0.9);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.03);
-      }
-      50% {
-        border-color: rgba(71, 93, 113, 0.35); /* נגיעה של צבע אצילי עמוק */
-        box-shadow: 0 10px 30px rgba(71, 93, 113, 0.12); /* הילה צבעונית רכה שמזמינה לגעת */
-      }
+    /* פיזור זמני ההשהיה כדי שכל כרטיס ינשום בקצב משלו */
+    .chocolat-piece:nth-child(2n)::before { animation-delay: 2s; }
+    .chocolat-piece:nth-child(3n)::before { animation-delay: 4s; }
+    .chocolat-piece:nth-child(5n)::before { animation-delay: 5.5s; }
+
+    @keyframes cardBreath {
+      0%, 100% { opacity: 0.15; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(1.02); }
+    }
+
+    /* דאגה שהתוכן בתוך הכרטיס יישאר מעל שכבת הצבע הנושמת */
+    .chocolat-piece > * {
+      position: relative;
+      z-index: 1;
     }
 
     /* אנימציית ריחוף יוקרתית */
     .chocolat-piece:hover, .chocolat-piece.active-mobile {
       transform: translateY(-6px) scale(1.02);
       background: rgba(255, 255, 255, 0.96);
-      box-shadow: 0 16px 40px rgba(71, 93, 113, 0.18);
-      border-color: rgba(71, 93, 113, 0.5);
+      box-shadow: 0 16px 40px rgba(71, 93, 113, 0.16);
+      border-color: rgba(71, 93, 113, 0.4);
       height: 230px;
       z-index: 10;
-      animation-play-state: paused;
+    }
+
+    .chocolat-piece:hover::before {
+      opacity: 0.9; /* העצמת הצבע בעת ריחוף */
     }
 
     .piece-header {
@@ -142,16 +154,11 @@
 
     .piece-cat {
       font-size: 0.75rem;
-      background: rgba(71, 93, 113, 0.1);
+      background: rgba(71, 93, 113, 0.08);
       color: var(--primary);
-      padding: 3px 10px;
+      padding: 3px 9px;
       border-radius: 10px;
       font-weight: 600;
-      transition: background 0.3s ease;
-    }
-
-    .chocolat-piece:hover .piece-cat {
-      background: rgba(71, 93, 113, 0.18);
     }
 
     .piece-title {
@@ -407,7 +414,7 @@
       document.getElementById('modal-overlay').classList.remove('active');
     });
 
-    document.getElementById('modal-overlay').addEventListener('click', (e) => {
+    document.getElementById('modal-overlay').classList.addEventListener('click', (e) => {
       if (e.target.id === 'modal-overlay') {
         document.getElementById('modal-overlay').classList.remove('active');
       }
