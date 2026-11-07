@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>קופסת השוקולדים (מעבדה) - Tנופת</title>
+  <title>קופסת השוקולדים (מעבדה עם פעימה) - Tנופת</title>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -103,6 +103,24 @@
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,0.02);
       transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      /* החלת אפקט הפעימה העדינה על הקוביות */
+      animation: cardPulse 6s infinite ease-in-out;
+    }
+
+    /* הוספת דירוג זמן השהייה לאנימציה (כדי שלא כולן יפעמו בדיוק באותו שנייה, אלא בטבעיות) */
+    .chocolat-piece:nth-child(2n) { animation-delay: 1.5s; }
+    .chocolat-piece:nth-child(3n) { animation-delay: 3s; }
+    .chocolat-piece:nth-child(5n) { animation-delay: 4.5s; }
+
+    @keyframes cardPulse {
+      0%, 100% {
+        border-color: rgba(230, 226, 221, 0.85);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.02);
+      }
+      50% {
+        border-color: rgba(71, 93, 113, 0.25);
+        box-shadow: 0 10px 30px rgba(71, 93, 113, 0.08);
+      }
     }
 
     /* אנימציית ריחוף יוקרתית (Hover Reflow) */
@@ -113,6 +131,7 @@
       border-color: rgba(71, 93, 113, 0.35);
       height: 230px;
       z-index: 10;
+      animation-play-state: paused; /* עצירת הפעימה בזמן ריחוף לנוחות קריאה */
     }
 
     .piece-header {
@@ -350,23 +369,19 @@
       }
     }
 
-    // ניהול חכם למובייל (לחיצה ראשונה פותחת הצצה, לחיצה שנייה או במחשב פותחת קריאה)
     window.handlePieceClick = function(event, id) {
       const card = event.currentTarget;
       const isMobile = window.innerWidth <= 768;
 
       if (isMobile && !card.classList.contains('active-mobile')) {
-        // במובייל - פתיחת הצצה בלחיצה ראשונה
         document.querySelectorAll('.chocolat-piece').forEach(c => c.classList.remove('active-mobile'));
         card.classList.add('active-mobile');
         event.stopPropagation();
       } else {
-        // במחשב או בלחיצה שניה במובייל - פתיחת מודאל מלא
         openModal(id);
       }
     };
 
-    // סגירת ההצצה במובייל כשלוחצים מחוץ לכרטיסים
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.chocolat-piece')) {
         document.querySelectorAll('.chocolat-piece').forEach(c => c.classList.remove('active-mobile'));
