@@ -73,7 +73,7 @@
       100% { transform: translate(-40px, -50px) scale(0.92); }
     }
 
-    /* --- כפתור תפריט דיסקרטי צף (בצד ימין) --- */
+    /* --- כפתור תפריט דיסקרטי צף --- */
     .menu-toggle-btn {
       position: fixed;
       top: 25px;
@@ -102,7 +102,7 @@
       box-shadow: 0 6px 20px rgba(71, 93, 113, 0.2);
     }
 
-    /* --- מגירת צד נסתרת (נפתחת מימין) --- */
+    /* --- מגירת צד נסתרת --- */
     .sidebar-drawer {
       position: fixed;
       top: 0;
@@ -122,9 +122,7 @@
       gap: 30px;
     }
 
-    .sidebar-drawer.active {
-      right: 0;
-    }
+    .sidebar-drawer.active { right: 0; }
 
     .sidebar-header {
       display: flex;
@@ -156,11 +154,7 @@
 
     .sidebar-close:hover { background: rgba(0,0,0,0.1); }
 
-    .sidebar-section {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .sidebar-section { display: flex; flex-direction: column; gap: 12px; }
 
     .sidebar-label {
       font-size: 0.9rem;
@@ -185,11 +179,7 @@
       box-shadow: 0 4px 12px rgba(71, 93, 113, 0.1);
     }
 
-    .filter-bar {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .filter-bar { display: flex; flex-direction: column; gap: 8px; }
 
     .filter-btn {
       background: rgba(255, 255, 255, 0.6);
@@ -221,18 +211,12 @@
       transition: opacity 0.3s ease;
     }
 
-    .drawer-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .drawer-overlay.active { opacity: 1; pointer-events: all; }
 
     /* --- מעטפת ראשית --- */
     .container { max-width: 1000px; margin: 0 auto; }
 
-    header {
-      text-align: center;
-      margin-bottom: 50px;
-    }
+    header { text-align: center; margin-bottom: 50px; }
 
     h1 {
       font-family: 'Frank Ruhl Libre', serif;
@@ -324,75 +308,71 @@
       font-weight: 600;
     }
 
-    /* --- מודאל קריאה מתקדם (Focus Modal) --- */
+    /* --- מודאל קריאה עם רקע דינאמי מתחלף --- */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(15, 15, 15, 0.4);
-      backdrop-filter: blur(8px);
+      background: rgba(15, 15, 15, 0.45);
+      backdrop-filter: blur(10px);
       z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.4s ease;
       padding: 20px;
     }
 
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
 
     .modal-content {
       background: #fdfdfc;
-      border-radius: 20px;
-      max-width: 650px;
+      border-radius: 24px;
+      max-width: 680px;
       width: 100%;
       max-height: 85vh;
       overflow-y: auto;
-      padding: 45px 40px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      padding: 50px 45px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.2);
       position: relative;
       transform: translateY(20px);
-      transition: transform 0.3s ease;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.6s ease;
+      border: 1px solid rgba(255,255,255,0.6);
     }
 
-    .modal-overlay.active .modal-content {
-      transform: translateY(0);
-    }
+    .modal-overlay.active .modal-content { transform: translateY(0); }
 
     .close-btn {
       position: absolute;
-      top: 20px;
-      left: 20px;
+      top: 22px;
+      left: 22px;
       background: rgba(0,0,0,0.05);
       border: none;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       font-size: 1.2rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.2s;
     }
 
-    .close-btn:hover { background: rgba(0,0,0,0.1); }
+    .close-btn:hover { background: rgba(0,0,0,0.1); transform: rotate(90deg); }
 
     .modal-header-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     .font-sizer {
       display: flex;
       gap: 6px;
-      background: rgba(0,0,0,0.04);
+      background: rgba(0,0,0,0.05);
       padding: 4px;
       border-radius: 8px;
     }
@@ -420,11 +400,13 @@
       color: var(--primary);
       font-weight: 600;
       display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .modal-title {
       font-family: 'Frank Ruhl Libre', serif;
-      font-size: 2.1rem;
+      font-size: 2.2rem;
       font-weight: 700;
       margin-bottom: 24px;
       color: #111;
@@ -489,9 +471,9 @@
     </main>
   </div>
 
-  <!-- מודאל קריאה -->
+  <!-- מודאל קריאה עם תמיכה ברקע דינאמי -->
   <div class="modal-overlay" id="modal-overlay">
-    <div class="modal-content">
+    <div class="modal-content" id="modal-content">
       <button class="close-btn" id="close-modal">&times;</button>
       <div class="modal-header-actions">
         <span class="modal-cat" id="modal-cat"></span>
@@ -572,7 +554,7 @@
       function openDrawer() {
         drawer.classList.add('active');
         overlay.classList.add('active');
-        searchInput.focus(); // פוקוס אוטומטי לחיפוש עם פתיחת המגירה
+        searchInput.focus();
       }
 
       function closeDrawer() {
@@ -592,15 +574,12 @@
       window.closeDrawer = closeDrawer;
     }
 
-    // הוספת האזנה למקש Escape לסגירת תפריטים ומודאלים
     function setupGlobalKeyboardEvents() {
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          // סגירת מגירת הצד אם היא פתוחה
           if (document.getElementById('sidebar-drawer').classList.contains('active')) {
             window.closeDrawer();
           }
-          // סגירת חלון הקריאה אם הוא פתוח
           if (document.getElementById('modal-overlay').classList.contains('active')) {
             document.getElementById('modal-overlay').classList.remove('active');
           }
@@ -671,18 +650,53 @@
       container.innerHTML = html;
     }
 
+    /* --- מנוע יצירת רקע דינאמי לפי תוכן הפתק --- */
+    function generateDynamicBackground(title, text) {
+      const content = (title + ' ' + text).toLowerCase();
+
+      // פלטות צבעים רכות ואווירתיות (Gradients)
+      if (content.match(/ים|מים|שמיים|רוח|ענן|גשם|כחול|אופק|סערה/)) {
+        // אווירה ימית / לילית קרה
+        return "linear-gradient(135deg, #f0f4f8 0%, #e2eafc 50%, #d0e1fd 100%)";
+      } else if (content.match(/אור|שמש|אש|זהב|חם|צהריים|חול|מדבר|קיץ/)) {
+        // אווירת שמש / חמימות ירחית
+        return "linear-gradient(135deg, #fefae0 0%, #fef3c7 50%, #fde68a 100%)";
+      } else if (content.match(/עץ|יער|טבע|פרח|אדמה|ירוק|עלים|אביב|גינה/)) {
+        // אווירת טבע וצמיחה
+        return "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%)";
+      } else if (content.match(/לילה|חשך|כוכב|צל|מחשבה|סוד|שקט|הרהור|נפש/)) {
+        // אווירת הרהור עמוקה / לילה עדין
+        return "linear-gradient(135deg, #f3f0ff 0%, #e9d5ff 50%, #d8b4fe 100%)";
+      } else if (content.match(/לב|אהבה|געגוע|חום|רשם|תשוקה|אדם|נשמה/)) {
+        // אווירה רגשית / פיוטית
+        return "linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%)";
+      }
+
+      // ברירת מחדל: גרדיאנט דינאמי ייחודי המבוסס על אורך ושם היצירה
+      const hash = content.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const hue1 = hash % 360;
+      const hue2 = (hue1 + 40) % 360;
+      return `linear-gradient(135deg, hsl(${hue1}, 40%, 96%) 0%, hsl(${hue2}, 45%, 91%) 100%)`;
+    }
+
     window.openModal = function(id) {
       const piece = allPieces.find(p => p.id === id);
       if (!piece) return;
 
       currentModalFontSize = 1.25;
       const bodyEl = document.getElementById('modal-body');
+      const modalContentEl = document.getElementById('modal-content');
+      
       bodyEl.style.fontSize = currentModalFontSize + 'rem';
       bodyEl.textContent = piece.text || '';
 
       document.getElementById('modal-title').textContent = piece.title || 'ללא כותרת';
       document.getElementById('modal-cat').textContent = piece.category || 'יצירה';
       
+      // הלבשת הרקע הדינאמי לפי תוכן הטקסט והכותרת
+      const dynamicBg = generateDynamicBackground(piece.title || '', piece.text || '');
+      modalContentEl.style.background = dynamicBg;
+
       document.getElementById('modal-overlay').classList.add('active');
     };
 
@@ -704,7 +718,7 @@
     });
 
     function escapeHtml(text) {
-      return (text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&#039;").replace(/'/g, "&#039;");
+      return (text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     loadLiteraryPieces();
