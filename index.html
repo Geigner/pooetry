@@ -4,35 +4,287 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>מילים - Tנופת</title>
-  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;700&display=swap" rel="stylesheet">
+  <!-- גופנים: Assistant לטקסט מערכת, Frank Ruhl Libre ליצירות ספרותיות -->
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;600;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --bg-color: #fcfbf9;
-      --text-main: #2b2b2b;
+      --bg-base: #f7f4ef;
+      --text-main: #222222;
       --text-muted: #666666;
       --primary: #475d71;
-      --border: #e6e2dd;
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --card-border: rgba(230, 226, 221, 0.8);
+      --accent-glow-1: rgba(220, 205, 185, 0.45);
+      --accent-glow-2: rgba(195, 210, 225, 0.4);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Assistant', sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 40px 20px; }
 
-    .container { max-width: 700px; margin: 0 auto; }
-    header { text-align: center; margin-bottom: 50px; border-bottom: 1px solid var(--border); padding-bottom: 25px; }
-    h1 { font-family: 'Frank Ruhl Libre', serif; font-size: 2.2rem; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
-    p.subtitle { color: var(--text-muted); font-size: 1.05rem; }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding: 50px 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
 
-    .pieces-list { display: flex; flex-direction: column; gap: 40px; }
-    .piece-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-    .piece-title { font-family: 'Frank Ruhl Libre', serif; font-size: 1.5rem; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
-    .piece-meta { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; display: flex; gap: 10px; align-items: center; }
-    .piece-cat { background: #f0ede6; padding: 2px 8px; border-radius: 6px; font-weight: 600; color: #444; }
-    .piece-body { font-size: 1.1rem; white-space: pre-wrap; line-height: 1.8; font-family: 'Frank Ruhl Libre', serif; color: #333; }
-    
-    .loading { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-top: 40px; }
+    /* --- רקע דינאמי וזורם (Ambient Floating Blobs) --- */
+    .ambient-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: floatAnimation 18s infinite ease-in-out alternate;
+    }
+
+    .blob-1 {
+      width: 500px; height: 500px;
+      background: var(--accent-glow-1);
+      top: -100px; right: -100px;
+    }
+
+    .blob-2 {
+      width: 600px; height: 600px;
+      background: var(--accent-glow-2);
+      bottom: -150px; left: -100px;
+      animation-delay: -9s;
+    }
+
+    @keyframes floatAnimation {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, 60px) scale(1.08); }
+      100% { transform: translate(-30px, -40px) scale(0.95); }
+    }
+
+    /* --- מעטפת ראשית --- */
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    /* --- סרגל סינון קטגוריות --- */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid var(--card-border);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(71, 93, 113, 0.2);
+    }
+
+    /* --- רשת יצירות (Grid) --- */
+    .pieces-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 25px;
+    }
+
+    .piece-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.02);
+      transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .piece-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+      border-color: rgba(71, 93, 113, 0.3);
+    }
+
+    .piece-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .piece-preview {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 1.05rem;
+      color: #444;
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 20px;
+    }
+
+    .piece-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(0,0,0,0.08);
+    }
+
+    .piece-cat {
+      font-size: 0.8rem;
+      background: rgba(71, 93, 113, 0.08);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .read-more {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* --- מודאל קריאה מתקדם (Focus Modal) --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 15, 15, 0.4);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: #fdfdfc;
+      border-radius: 20px;
+      max-width: 650px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 45px 40px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.05);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .close-btn:hover { background: rgba(0,0,0,0.1); }
+
+    .modal-cat {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+
+    .modal-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #111;
+    }
+
+    .modal-body {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 1.25rem;
+      line-height: 1.9;
+      color: #2b2b2b;
+      white-space: pre-wrap;
+    }
+
+    .loading { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-top: 60px; grid-column: 1 / -1; }
   </style>
 </head>
 <body>
+
+  <!-- רקע דינאמי נושם -->
+  <div class="ambient-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
 
   <div class="container">
     <header>
@@ -40,9 +292,25 @@
       <p class="subtitle">Tנופת - מרחב יצירה ותצוגה ספרותית</p>
     </header>
 
+    <!-- סרגל סינון קטגוריות -->
+    <nav class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" data-cat="all">הכל</button>
+    </nav>
+
+    <!-- גלריית יצירות -->
     <main id="poetry-container">
       <div class="loading">טוען יצירות מהענן...</div>
     </main>
+  </div>
+
+  <!-- מודאל קריאה -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-content">
+      <button class="close-btn" id="close-modal">&times;</button>
+      <span class="modal-cat" id="modal-cat"></span>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
   </div>
 
   <script type="module">
@@ -61,56 +329,122 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    let allPieces = [];
+
     async function loadLiteraryPieces() {
       const container = document.getElementById('poetry-container');
       try {
-        // שליפת פתקים שמוגדרים כציבוריים בלבד בעזרת השדה isPublic
         const q = query(
           collection(db, "notes"), 
           where("isPublic", "==", true)
         );
         
         const querySnapshot = await getDocs(q);
-        let pieces = [];
+        allPieces = [];
 
         querySnapshot.forEach((docSnap) => {
           const note = docSnap.data();
           if (!note.archived) {
-            pieces.push({ id: docSnap.id, ...note });
+            allPieces.push({ id: docSnap.id, ...note });
           }
         });
 
-        // מיון לפי תאריך יצירה (חדש ישן)
-        pieces.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        // מיון מהחדש לישן
+        allPieces.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-        if (pieces.length === 0) {
+        if (allPieces.length === 0) {
           container.innerHTML = `<div class="loading">עדיין אין יצירות ציבוריות להצגה.</div>`;
           return;
         }
 
-        let html = '<div class="pieces-list">';
-        pieces.forEach(p => {
-          const titleHtml = p.title ? `<div class="piece-title">${escapeHtml(p.title)}</div>` : '';
-          html += `
-            <article class="piece-card">
-              ${titleHtml}
-              <div class="piece-meta">
-                <span class="piece-cat">${escapeHtml(p.category || 'יצירה')}</span>
-                <span>•</span>
-                <span>${escapeHtml(p.date || '')}</span>
-              </div>
-              <div class="piece-body">${escapeHtml(p.text)}</div>
-            </article>
-          `;
-        });
-        html += '</div>';
-        container.innerHTML = html;
+        buildCategoryFilters();
+        renderPieces('all');
 
       } catch (error) {
         console.error(error);
         container.innerHTML = `<div class="loading" style="color: #be123c;">שגיאה בטעינת הנתונים מהענן.</div>`;
       }
     }
+
+    // ביוש סרגל קטגוריות מתוך הנתונים
+    function buildCategoryFilters() {
+      const filterBar = document.getElementById('filter-bar');
+      const categories = new Set(allPieces.map(p => p.category || 'יצירה'));
+      
+      filterBar.innerHTML = `<button class="filter-btn active" data-cat="all">הכל</button>`;
+      
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.cat = cat;
+        btn.textContent = cat;
+        filterBar.appendChild(btn);
+      });
+
+      filterBar.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          renderPieces(e.target.dataset.cat);
+        }
+      });
+    }
+
+    // תצוגת הכרטיסים
+    function renderPieces(filterCat) {
+      const container = document.getElementById('poetry-container');
+      const filtered = filterCat === 'all' 
+        ? allPieces 
+        : allPieces.filter(p => (p.category || 'יצירה') === filterCat);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="loading">אין יצירות בקטגוריה זו.</div>`;
+        return;
+      }
+
+      let html = '<div class="pieces-grid">';
+      filtered.forEach(p => {
+        const title = p.title || 'ללא כותרת';
+        const cat = p.category || 'יצירה';
+        
+        html += `
+          <article class="piece-card" onclick="openModal('${p.id}')">
+            <div>
+              <h3 class="piece-title">${escapeHtml(title)}</h3>
+              <div class="piece-preview">${escapeHtml(p.text)}</div>
+            </div>
+            <div class="piece-footer">
+              <span class="piece-cat">${escapeHtml(cat)}</span>
+              <span class="read-more">לקריאה מלאה &larr;</span>
+            </div>
+          </article>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // ניהול חלון קריאה (Focus Modal)
+    window.openModal = function(id) {
+      const piece = allPieces.find(p => p.id === id);
+      if (!piece) return;
+
+      document.getElementById('modal-title').textContent = piece.title || 'ללא כותרת';
+      document.getElementById('modal-cat').textContent = piece.category || 'יצירה';
+      document.getElementById('modal-body').textContent = piece.text || '';
+      
+      document.getElementById('modal-overlay').classList.add('active');
+    };
+
+    document.getElementById('close-modal').addEventListener('click', () => {
+      document.getElementById('modal-overlay').classList.remove('active');
+    });
+
+    document.getElementById('modal-overlay').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-overlay') {
+        document.getElementById('modal-overlay').classList.remove('active');
+      }
+    });
 
     function escapeHtml(text) {
       return (text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
