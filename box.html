@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>קופסת השוקולדים (גל קשת צבעוני) - Tנופת</title>
+  <title>קופסת השוקולדים (גל אלכסוני) - Tנופת</title>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -12,8 +12,8 @@
       --text-main: #222222;
       --text-muted: #666666;
       --primary: #475d71;
-      --card-bg: rgba(255, 255, 255, 0.78);
-      --card-border: rgba(230, 226, 221, 0.85);
+      --card-bg: rgba(255, 255, 255, 0.82);
+      --card-border: rgba(230, 226, 221, 0.9);
       --accent-glow-1: rgba(215, 195, 170, 0.6);
       --accent-glow-2: rgba(180, 200, 220, 0.55);
       --accent-glow-3: rgba(230, 220, 200, 0.5);
@@ -91,8 +91,7 @@
     .chocolat-piece {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
-      /* שימוש במסגרת רב-צבעונית רכה שזזה בעדינות */
-      border: 1.5px solid rgba(230, 226, 221, 0.9);
+      border: 1px solid var(--card-border);
       border-radius: 18px;
       height: 170px;
       padding: 22px;
@@ -104,28 +103,40 @@
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,0.02);
       transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-      /* הפעלת גל הצבעים על המסגרת והצל */
-      animation: colorWave 8s infinite ease-in-out;
     }
 
-    /* פיזור זמני ההשהיה כדי שלא כולם יזוזו יחד */
-    .chocolat-piece:nth-child(2n) { animation-delay: 2s; }
-    .chocolat-piece:nth-child(3n) { animation-delay: 4s; }
-    .chocolat-piece:nth-child(5n) { animation-delay: 6s; }
+    /* פס גל אלכסוני שחולף על פני הכרטיס */
+    .chocolat-piece::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        135deg,
+        transparent 40%,
+        rgba(71, 93, 113, 0.06) 48%,
+        rgba(215, 195, 170, 0.12) 50%,
+        rgba(71, 93, 113, 0.06) 52%,
+        transparent 60%
+      );
+      transform: translateY(-100%) translateX(-100%) rotate(25deg);
+      animation: diagonalWave 7s infinite ease-in-out;
+      pointer-events: none;
+    }
 
-    /* אנימציית קשת הצבעים העדינה שחולפת על המסגרת והרקע */
-    @keyframes colorWave {
-      0%, 100% {
-        border-color: rgba(230, 226, 221, 0.9);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.02);
+    /* פיזור זמני ההשהיה של הגל כדי שכל קובייה תזהר בזמנה הנפרד */
+    .chocolat-piece:nth-child(2n)::after { animation-delay: 2s; }
+    .chocolat-piece:nth-child(3n)::after { animation-delay: 4s; }
+    .chocolat-piece:nth-child(5n)::after { animation-delay: 5.5s; }
+
+    @keyframes diagonalWave {
+      0% {
+        transform: translateY(-100%) translateX(-100%) rotate(25deg);
       }
-      33% {
-        border-color: rgba(195, 175, 155, 0.45); /* גוון חול/חם עדין */
-        box-shadow: 0 8px 25px rgba(210, 185, 160, 0.1);
-      }
-      66% {
-        border-color: rgba(145, 170, 195, 0.45); /* גוון תכלת/אפור אצילי עדין */
-        box-shadow: 0 8px 25px rgba(145, 170, 195, 0.1);
+      20%, 100% {
+        transform: translateY(100%) translateX(100%) rotate(25deg);
       }
     }
 
@@ -134,10 +145,9 @@
       transform: translateY(-6px) scale(1.02);
       background: rgba(255, 255, 255, 0.95);
       box-shadow: 0 16px 40px rgba(71, 93, 113, 0.14);
-      border-color: rgba(71, 93, 113, 0.4);
+      border-color: rgba(71, 93, 113, 0.35);
       height: 230px;
       z-index: 10;
-      animation-play-state: paused;
     }
 
     .piece-header {
@@ -399,7 +409,7 @@
       if (!piece) return;
 
       document.getElementById('modal-title').textContent = piece.title || 'ללא כותרת';
-      document.getElementById('modal-cat').textContent = piece.category || 'יצירות';
+      document.getElementById('modal-cat').textContent = piece.category || 'יצירה';
       document.getElementById('modal-body').textContent = piece.text || '';
       document.getElementById('modal-overlay').classList.add('active');
     }
