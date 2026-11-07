@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>קופסת השוקולדים (נשימה צבעונית רכה) - Tנופת</title>
+  <title>קופסת השוקולדים החלומית - Tנופת</title>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -87,9 +87,9 @@
     }
 
     .chocolat-piece {
-      background: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.82);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(230, 226, 221, 0.85);
+      border: 1px solid rgba(230, 226, 221, 0.9);
       border-radius: 18px;
       height: 170px;
       padding: 22px;
@@ -103,30 +103,27 @@
       transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
 
-    /* שכבת צבע פנימית שנושמת וזזה בעדינות על פני כל הכרטיס */
+    /* שכבת צבע פנימית חלומית ונעימה שנושמת וזזה על הפתק */
     .chocolat-piece::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(215, 195, 170, 0.25), rgba(180, 200, 220, 0.25));
-      opacity: 0;
+      background: linear-gradient(135deg, rgba(235, 220, 205, 0.45), rgba(195, 210, 225, 0.4));
+      opacity: 0.4;
       transition: opacity 0.8s ease;
-      animation: cardBreath 7s infinite ease-in-out;
+      animation: dreamBreath 8s infinite ease-in-out;
       z-index: 0;
       pointer-events: none;
     }
 
-    /* פיזור זמני ההשהיה כדי שכל כרטיס ינשום בקצב משלו */
-    .chocolat-piece:nth-child(2n)::before { animation-delay: 2s; }
-    .chocolat-piece:nth-child(3n)::before { animation-delay: 4s; }
-    .chocolat-piece:nth-child(5n)::before { animation-delay: 5.5s; }
+    .chocolat-piece:nth-child(2n)::before { animation-delay: 2.5s; background: linear-gradient(135deg, rgba(220, 210, 225, 0.4), rgba(210, 225, 215, 0.4)); }
+    .chocolat-piece:nth-child(3n)::before { animation-delay: 5s; background: linear-gradient(135deg, rgba(240, 225, 210, 0.45), rgba(210, 220, 235, 0.4)); }
 
-    @keyframes cardBreath {
-      0%, 100% { opacity: 0.15; transform: scale(1); }
-      50% { opacity: 0.75; transform: scale(1.02); }
+    @keyframes dreamBreath {
+      0%, 100% { opacity: 0.25; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
     }
 
-    /* דאגה שהתוכן בתוך הכרטיס יישאר מעל שכבת הצבע הנושמת */
     .chocolat-piece > * {
       position: relative;
       z-index: 1;
@@ -136,14 +133,14 @@
     .chocolat-piece:hover, .chocolat-piece.active-mobile {
       transform: translateY(-6px) scale(1.02);
       background: rgba(255, 255, 255, 0.96);
-      box-shadow: 0 16px 40px rgba(71, 93, 113, 0.16);
-      border-color: rgba(71, 93, 113, 0.4);
+      box-shadow: 0 16px 40px rgba(71, 93, 113, 0.18);
+      border-color: rgba(71, 93, 113, 0.45);
       height: 230px;
       z-index: 10;
     }
 
     .chocolat-piece:hover::before {
-      opacity: 0.9; /* העצמת הצבע בעת ריחוף */
+      opacity: 1;
     }
 
     .piece-header {
@@ -154,7 +151,7 @@
 
     .piece-cat {
       font-size: 0.75rem;
-      background: rgba(71, 93, 113, 0.08);
+      background: rgba(71, 93, 113, 0.1);
       color: var(--primary);
       padding: 3px 9px;
       border-radius: 10px;
@@ -170,7 +167,6 @@
       margin-top: 10px;
     }
 
-    /* ההצצה שצפה ועולה בעדינות */
     .piece-peek {
       font-family: 'Frank Ruhl Libre', serif;
       font-size: 0.9rem;
@@ -191,7 +187,6 @@
       transform: translateY(0);
     }
 
-    /* רמז ויזואלי (חץ עדין שמופיע בריחוף) */
     .piece-hint {
       font-size: 0.78rem;
       color: var(--primary);
@@ -414,7 +409,7 @@
       document.getElementById('modal-overlay').classList.remove('active');
     });
 
-    document.getElementById('modal-overlay').classList.addEventListener('click', (e) => {
+    document.getElementById('modal-overlay').addEventListener('click', (e) => {
       if (e.target.id === 'modal-overlay') {
         document.getElementById('modal-overlay').classList.remove('active');
       }
