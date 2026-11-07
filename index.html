@@ -6,6 +6,9 @@
   <title>מילים - Tנופת</title>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&family=Frank+Ruhl+Libre:wght@400;600;700&display=swap" rel="stylesheet">
   
+  <!-- פאביקון מובנה אלגנטי (אות T) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%><text y=%22.9em%22 font-size=%2290%22 font-family=%22serif%22 fill=%22%23475d71%22>T</text></svg>">
+
   <style>
     :root {
       --bg-base: #f7f4ef;
@@ -60,7 +63,7 @@
       100% { transform: translate(-40px, -50px) scale(0.92); }
     }
 
-    /* --- אלמנט כתם המים המרחף (Water-Color Watermark) --- */
+    /* --- אלמנט כתם המים המרחף (Watermark) --- */
     .watermark-stain {
       position: fixed;
       bottom: 30px;
@@ -196,7 +199,7 @@
       letter-spacing: -0.5px;
     }
 
-    /* --- רשת כרטיסים נקיים ואקסקלוסיביים --- */
+    /* --- רשת יצירות אקסקלוסיבית עם הברקת אור --- */
     .chocolate-box-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -220,7 +223,6 @@
       transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
 
-    /* פס הברקת אור אקסקלוסיבי */
     .chocolat-piece::after {
       content: '';
       position: absolute;
@@ -492,7 +494,7 @@
       const container = document.getElementById('poetry-container');
       try {
         const q = query(collection(db, "notes"), where("isPublic", "==", true));
-        const querySnapshot = querySnapshot = await getDocs(q); // safe fallback
+        const querySnapshot = await getDocs(q);
         allPieces = [];
 
         querySnapshot.forEach((docSnap) => {
@@ -669,7 +671,7 @@
       document.getElementById('modal-overlay').classList.remove('active');
     });
 
-    document.getElementById('modal-overlay').classList.addEventListener('click', (e) => {
+    document.getElementById('modal-overlay').addEventListener('click', (e) => {
       if (e.target.id === 'modal-overlay') {
         document.getElementById('modal-overlay').classList.remove('active');
       }
