@@ -63,39 +63,20 @@
       100% { transform: translate(-40px, -50px) scale(0.92); }
     }
 
-    /* --- אלמנט כתם המים המרחף (Watermark) --- */
-    .watermark-stain {
+    /* --- חותמת מים דיסקרטית ושקטה בפינת המסך --- */
+    .subtle-watermark {
       position: fixed;
       bottom: 30px;
-      left: 30px;
-      width: 130px;
-      height: 130px;
-      background: radial-gradient(circle, rgba(215, 195, 170, 0.45) 0%, rgba(180, 200, 220, 0.25) 60%, transparent 85%);
-      border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
-      filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      pointer-events: none;
-      animation: stainMorph 10s infinite ease-in-out alternate;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-    }
-
-    .watermark-text {
+      left: 35px;
       font-family: 'Frank Ruhl Libre', serif;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--primary);
-      opacity: 0.65;
-      letter-spacing: 1px;
-      transform: rotate(-10deg);
-    }
-
-    @keyframes stainMorph {
-      0% { border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%; transform: scale(1) translate(0, 0); }
-      50% { border-radius: 40% 60% 30% 70% / 60% 30% 70% 40%; transform: scale(1.08) translate(-5px, -8px); }
-      100% { border-radius: 50% 50% 50% 50% / 40% 50% 60% 50%; transform: scale(0.95) translate(5px, 5px); }
+      opacity: 0.3; /* עדין מאוד ולא בולט מדי */
+      letter-spacing: 2px;
+      pointer-events: none;
+      z-index: 5;
+      user-select: none;
     }
 
     /* --- כפתור תפריט דיסקרטי --- */
@@ -199,7 +180,7 @@
       letter-spacing: -0.5px;
     }
 
-    /* --- רשת יצירות אקסקלוסיבית עם הברקת אור --- */
+    /* --- רשת כרטיסים אקסקלוסיבית עם הברקת אור --- */
     .chocolate-box-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -414,10 +395,8 @@
     <div class="blob blob-3"></div>
   </div>
 
-  <!-- כתם המים המרחף עם הלוגו שלך -->
-  <div class="watermark-stain">
-    <span class="watermark-text">Tנופת</span>
-  </div>
+  <!-- חותמת מים דיסקרטית ושקטה בפינה -->
+  <div class="subtle-watermark">Tנופת</div>
 
   <button class="menu-toggle-btn" id="menu-toggle-btn">
     <span>☰</span> חיפוש וסינון
